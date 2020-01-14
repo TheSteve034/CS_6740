@@ -91,7 +91,13 @@ void simpleCryptoMenu() {
 		clearStdIn();
 		getKey();
 		getInput();
-
+		encrypt();
+		setupMainMenu();
+	}
+	if (buffer[0] == '2') {
+		//her we will handle decrypting a string based on a key
+		clearStdIn();
+		getKey();
 	}
 	if (buffer[0] == '3') {
 		//return to the main menu

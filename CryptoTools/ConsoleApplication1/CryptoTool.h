@@ -4,7 +4,6 @@
 void mainMenuSelection();
 void setupMainMenu();
 void clearStdIn();
-void simpleCryptoTool(int menuOption);
 void simpleCryptoMenu();
 void validateSelection(char buffer[2], int menuType);
 

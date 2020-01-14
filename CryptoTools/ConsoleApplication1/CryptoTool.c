@@ -68,11 +68,6 @@ void setupMainMenu() {
 }
 
 
-void simpleCryptoTool(int menuOption) {
-
-}
-
-
 void simpleCryptoMenu() {
 	printf("------------------------------------\n");
 	printf("Welcome to the Simple Crypto Tool.\n");
@@ -98,6 +93,9 @@ void simpleCryptoMenu() {
 		//her we will handle decrypting a string based on a key
 		clearStdIn();
 		getKey();
+		getDecryptInput();
+		decrypt();
+		setupMainMenu();
 	}
 	if (buffer[0] == '3') {
 		//return to the main menu

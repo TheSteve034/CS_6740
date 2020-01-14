@@ -26,6 +26,28 @@ void encrypt() {
 	printf("You provided \'%s\', it was encrypted to \'%s\'.\n", plainText, encrypted);
 }
 
+//this method decrypts a string based on a users key and input string.
+void decrypt() {
+	int index = 0;
+	int eIndex = 0;
+	while (encrypted[index] != '\0') {
+		if (encrypted[index] == ' ') {
+			decrypted[index] = ' ';
+		}
+		else {
+			for (int i = 0; i < 26; i++) {
+				if (ealphabet[i] == encrypted[eIndex]) {
+					decrypted[eIndex] = i + 97;
+					eIndex++;
+					index++;
+					break;
+				}
+			}
+		}
+	}
+	printf("You provided \'%s\', it was decrypted to \'%s\'.\n", encrypted, decrypted);
+}
+
 void getKey() {
 	printf("Enter a one character key:\n");
 	gets(key);

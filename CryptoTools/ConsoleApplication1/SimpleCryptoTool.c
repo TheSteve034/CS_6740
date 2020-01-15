@@ -1,29 +1,38 @@
 #include<stdio.h>
-#include "SimpleCryptoTool.h"
+#include <stdlib.h>
 #include <ctype.h>
+#include "SimpleCryptoTool.h"
 
 char key[1];
 char alphabet[26] = { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
 char ealphabet[26] = { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
-char plainText[50];
+char plainText[100];
 char encrypted[50];
 char decrypted[50];
+FILE* inFile;
+FILE* outfile;
 
 //this method encrypts the text provided by the user.
 void encrypt() {
-	int index = 0;
-	while (plainText[index] != '\0') {
-		if (plainText[index] == ' ') {
-			encrypted[index] = ' ';
-			index++;
+	char c;
+	outfile = fopen("encryptedFile.txt.txt", "w");
+	while (1) {
+		c = fgetc(inFile);
+		if (c == EOF) {
+			break;
+		}
+		if (c == ' ') {
+			fputc(' ', outfile);
 		}
 		else {
-			int asciiVal = plainText[index] - 97;
-			encrypted[index] = ealphabet[asciiVal];
-			index++;
+			int asciiVal = c - 97;
+			fputc(ealphabet[asciiVal],outfile);
+			
 		}
 	}
-	printf("You provided \'%s\', it was encrypted to \'%s\'.\n", plainText, encrypted);
+	fclose(outfile);
+	fclose(inFile);
+	printf("You provided \'%s\', it was encrypted to encryptedFile.txt.\n", plainText);
 }
 
 //this method decrypts a string based on a users key and input string.
@@ -55,9 +64,14 @@ void getKey() {
 
 //this method gether the string the user wished to encrypt
 void getInput() {
-	printf("Enter a string to be encrypted:\n");
+	printf("Enter a file name to be encrypted. Please provide the fulle path for the file:\n");
 	gets(plainText);
-	convertInputToLower();
+	//convertInputToLower();
+	//open the file
+	if ((inFile = fopen(plainText, "r+")) == '\0') {
+		printf("cannot open the file");
+		exit(1);
+	}
 	subAlphabet();
 }
 

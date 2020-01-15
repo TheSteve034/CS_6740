@@ -20,7 +20,7 @@ void validateSelection(char buffer[2], int menuType) {
 		}
 		if (menuType == 1) {
 			//menuType 1 refers to the main menu
-			if (buffer[0] != '1') {
+			if (buffer[0] != '1'&& buffer[0] != '2') {
 				printf("Invalid selection. Press 1 for the simple crypto tool\n");
 				invaildAttempts++;
 				clearStdIn();
@@ -47,6 +47,7 @@ void validateSelection(char buffer[2], int menuType) {
 
 void mainMenuSelection() {
 	printf("Press 1 for the simple crypto tool.\n");
+	printf("Press 2 to exit the appication.\n");
 	//create a char array and set it to NULL
 	char buffer[2] = { 0 };
 	//only allow 1 char from the user.
@@ -57,6 +58,9 @@ void mainMenuSelection() {
 	if (buffer[0] == '1') {
 		//option 1 launches the simple crypto tool
 		simpleCryptoMenu();
+	}
+	if (buffer[0] == '2') {
+		return;
 	}
 }
 

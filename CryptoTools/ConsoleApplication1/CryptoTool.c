@@ -3,7 +3,7 @@
 #include "CryptoTool.h"
 #include "SimpleCryptoTool.h"
 
-//clears stdin as a part of input validation
+//clears stdin by consuming any uncaught chars.
 void clearStdIn() {
 	int x = 0;
 	while ((x = getchar()) != '\n' && x != EOF) {}

@@ -4,7 +4,6 @@
 void getKey();
 void getInput();
 void getDecryptInput();
-void convertInputToLower();
 void subAlphabet();
 void encrypt();
 #endif

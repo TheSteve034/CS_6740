@@ -15,9 +15,10 @@ FILE* outfile;
 //this method encrypts the text provided by the user.
 void encrypt() {
 	char c;
-	outfile = fopen("encryptedFile.txt.txt", "w");
+	outfile = fopen("encryptedFile.txt", "w");
 	while (1) {
 		c = fgetc(inFile);
+		c = tolower(c);
 		if (c == EOF) {
 			break;
 		}
@@ -35,26 +36,32 @@ void encrypt() {
 	printf("You provided \'%s\', it was encrypted to encryptedFile.txt.\n", plainText);
 }
 
-//this method decrypts a string based on a users key and input string.
+//this method decrypts a file provided by the user based on a ket provided by the user.
 void decrypt() {
-	int index = 0;
-	int eIndex = 0;
-	while (encrypted[index] != '\0') {
-		if (encrypted[index] == ' ') {
-			decrypted[index] = ' ';
+	outfile = fopen("decryptedFile.txt", "w");
+	char c;
+	while (1) {
+		//will bo converting all characters in the file to a lower case.
+		c = fgetc(inFile);
+		c = tolower(c);
+		if (c == EOF) {
+			break;
+		}
+		if (c == ' ') {
+			fputc(' ', outfile);
 		}
 		else {
 			for (int i = 0; i < 26; i++) {
-				if (ealphabet[i] == encrypted[eIndex]) {
-					decrypted[eIndex] = i + 97;
-					eIndex++;
-					index++;
+				if (ealphabet[i] == c) {
+					fputc(i + 97, outfile);
 					break;
 				}
 			}
 		}
 	}
-	printf("You provided \'%s\', it was decrypted to \'%s\'.\n", encrypted, decrypted);
+	fclose(outfile);
+	fclose(inFile);
+	printf("You provided \'%s\', it was decrypted to decryptedFile.txt.\n", encrypted);
 }
 
 void getKey() {
@@ -64,9 +71,8 @@ void getKey() {
 
 //this method gether the string the user wished to encrypt
 void getInput() {
-	printf("Enter a file name to be encrypted. Please provide the fulle path for the file:\n");
+	printf("Enter a file name to be encrypted. Please provide the fulle path for the file. The file must only contain characters that are letters of the alphabet:\n");
 	gets(plainText);
-	//convertInputToLower();
 	//open the file
 	if ((inFile = fopen(plainText, "r+")) == '\0') {
 		printf("cannot open the file");
@@ -75,16 +81,19 @@ void getInput() {
 	subAlphabet();
 }
 
+//Asks the user to provided a file to be decrypted.
 void getDecryptInput() {
-	printf("Enter a string to be decrypted:\n");
+	printf("Enter a File to be decrypted. Please provide the full path for the file. The file must only contain characters that are letters of the alphabet:\n");
 	gets(encrypted);
-	convertInputToLower();
+	if ((inFile = fopen(encrypted, "r+")) == '\0') {
+		printf("cannot open the file");
+		exit(1);
+	}
 	subAlphabet();
 }
 
 //this method will created the encrypted alphabet based on the key provided by the user
 void subAlphabet() {
-	//ealphabet[0] = key[0];
 	int asciiVal = key[0];
 	int index = 0;
 	for (int i = 0; i < 26; i++) {
@@ -111,11 +120,5 @@ void subAlphabet() {
 			ealphabet[i] = asciiVal + modifier;
 			modifier++;
 		}
-	}
-}
-
-void convertInputToLower() {
-	for (int i = 0; i < 50; i++) {
-		plainText[i] = tolower(plainText[i]);
 	}
 }

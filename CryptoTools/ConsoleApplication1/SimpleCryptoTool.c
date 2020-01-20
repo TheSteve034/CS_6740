@@ -22,8 +22,8 @@ void encrypt() {
 		if (c == EOF) {
 			break;
 		}
-		if (c == ' ') {
-			fputc(' ', outfile);
+		if (isalpha(c) == 0) {
+			fputc(c, outfile);
 		}
 		else {
 			int asciiVal = c - 97;
@@ -47,8 +47,8 @@ void decrypt() {
 		if (c == EOF) {
 			break;
 		}
-		if (c == ' ') {
-			fputc(' ', outfile);
+		if (isalpha(c) == 0) {
+			fputc(c, outfile);
 		}
 		else {
 			for (int i = 0; i < 26; i++) {

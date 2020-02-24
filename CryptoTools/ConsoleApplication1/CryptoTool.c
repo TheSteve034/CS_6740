@@ -47,7 +47,8 @@ void validateSelection(char buffer[2], int menuType) {
 
 void mainMenuSelection() {
 	printf("Press 1 for the simple crypto tool.\n");
-	printf("Press 2 to exit the appication.\n");
+	printf("Press 2 for employee directory\n");
+	printf("Press 3 to exit the appication.\n");
 	//create a char array and set it to NULL
 	char buffer[2] = { 0 };
 	//only allow 1 char from the user.
@@ -59,7 +60,10 @@ void mainMenuSelection() {
 		//option 1 launches the simple crypto tool
 		simpleCryptoMenu();
 	}
-	if (buffer[0] == '2') {
+	if(buffer[0] == '2') {
+		setUIDMenu();
+	}
+	if (buffer[0] == '3') {
 		return;
 	}
 }
@@ -71,6 +75,24 @@ void setupMainMenu() {
 	mainMenuSelection();
 }
 
+void setUIDMenu() {
+	printf("------------------------------------\n");
+	printf("Welcome to the setUID tool.\n");
+	prinft("Select the desiered opertaion from the menu bellow.\n");
+	printf("1. View Directory\n2. Modify Directory\n3. Main Menu\n");
+
+	//create a char array and set it to NULL
+	char buffer[2] = { 0 };
+	clearStdIn();
+	//only allow 1 char from the user.
+	fgets(buffer, 2, stdin);
+	validateSelection(buffer, 2);
+	if (buffer[0] == '3') {
+		//return to the main menu
+		clearStdIn();
+		setupMainMenu();
+	}
+}
 
 void simpleCryptoMenu() {
 	printf("------------------------------------\n");

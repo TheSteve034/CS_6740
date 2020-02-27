@@ -43,6 +43,19 @@ void validateSelection(char buffer[2], int menuType) {
 				isValid = true;
 			}
 		}
+		if (menuType == 3) {
+			//menuType 2 refers to the simple crypto tool
+			if (buffer[0] != '1' && buffer[0] != '2' && buffer[0] != '3' && buffer[0] != '4') {
+				printf("Invalid selection.\n");
+				invaildAttempts++;
+				clearStdIn();
+				fgets(buffer, 2, stdin);
+			}
+			else {
+				isValid = true;
+			}
+		}
+		
 	}
 }
 
@@ -80,15 +93,35 @@ void setUIDMenu() {
 	printf("------------------------------------\n");
 	printf("Welcome to the setUID tool.\n");
 	printf("Select the desiered opertaion from the menu bellow.\n");
-	printf("1. View Directory\n2. Modify Directory\n3. Main Menu\n");
+	printf("1. View Directory\n2. Modify Directory\n3. Change Password\n4. Main Menu\n");
 
 	//create a char array and set it to NULL
 	char buffer[2] = { 0 };
 	clearStdIn();
 	//only allow 1 char from the user.
 	fgets(buffer, 2, stdin);
-	validateSelection(buffer, 2);
+	validateSelection(buffer, 3);
+	if(buffer[0] == '1') {
+		printDirectory();
+		setUIDMenu();
+	}
 	if (buffer[0] == '3') {
+		//return to the main menu
+		clearStdIn();
+		printf("To reset password please provide the current password:\n");
+		unsigned char currPword[50];
+		gets(currPword);
+		//check password
+		int res = validatePassword(currPword);
+		if(validatePassword(currPword) == 0) {
+			//password is valid
+			printf("passord is valid.\n");
+		} else {
+			printf("Invalid password.\n");
+			setUIDMenu();
+		}
+	}
+	if (buffer[0] == '4') {
 		//return to the main menu
 		clearStdIn();
 		setupMainMenu();
@@ -132,7 +165,6 @@ void simpleCryptoMenu() {
 }
 
 int main() {
-	printDirectory();
-	//setupMainMenu();
+	setupMainMenu();
 	return 0;
 }

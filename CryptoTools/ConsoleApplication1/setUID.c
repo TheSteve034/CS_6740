@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
-#include "sha1.h"
+//#include "sha1.h"
 //holds the User and owning user information
 struct userIds {
    uid_t rUser;
@@ -11,6 +11,7 @@ struct userIds {
 } uID;
 
 struct eInfo {
+    int active;
     char fname[50];
     char lname[50];
     char pos[50];
@@ -40,7 +41,6 @@ int validatePassword(const char *pword) {
     //the password file is only readable as root to read from it we need
     //to raise the the UID to root
     setuid(uID.owner);
-    //read the file.
     FILE *fp;
     fp = fopen("passwordFile.txt", "r");
     if(fp == NULL) {
@@ -52,22 +52,17 @@ int validatePassword(const char *pword) {
     int i = 0;
     while((ch = fgetc(fp)) != EOF) {
         if(i < 1000) {
+            if(ch == '\n') {
+                continue;
+            }
             phash[i] = ch;
             i++;
         }
     }
-    //downgrade uID and close the file since it keeps root permission until closed
     fclose(fp);
-    setuid(uID.rUser);
-    //step 2
-    //get a hash of the plain text provided.
-    unsigned char uhash = getSha1(pword);
-    //step 3
-    if(uhash == phash) {
-        return 0;
-    } else {
-        return -1;
-    }
+    //downgrade uID
+    return 0;
+    
 }
 
 /*
@@ -175,8 +170,10 @@ int printDirectory() {
             token = strtok(NULL,delmitier);
         }
     }
+    
     printf("-------------------------------------------\n");
     for(int i =0; i < atoi(eCount); i++ ) {
+        emp[i].active =1;
         printf("First Name: %s\nLast Name: %s\nPosition: %s\nEmployee ID: %s\nEmployee Phone Number: %s\n",emp[i].fname,emp[i].lname,emp[i].pos,emp[i].eID,emp[i].phone);
         printf("-------------------------------------------\n");
     }

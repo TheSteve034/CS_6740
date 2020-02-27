@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include "CryptoTool.h"
 #include "SimpleCryptoTool.h"
+#include "setUID.h"
 
 //clears stdin by consuming any uncaught chars.
 void clearStdIn() {
@@ -20,7 +21,7 @@ void validateSelection(char buffer[2], int menuType) {
 		}
 		if (menuType == 1) {
 			//menuType 1 refers to the main menu
-			if (buffer[0] != '1'&& buffer[0] != '2') {
+			if (buffer[0] != '1'&& buffer[0] != '2'&& buffer[0] != '3') {
 				printf("Invalid selection. Press 1 for the simple crypto tool\n");
 				invaildAttempts++;
 				clearStdIn();
@@ -78,7 +79,7 @@ void setupMainMenu() {
 void setUIDMenu() {
 	printf("------------------------------------\n");
 	printf("Welcome to the setUID tool.\n");
-	prinft("Select the desiered opertaion from the menu bellow.\n");
+	printf("Select the desiered opertaion from the menu bellow.\n");
 	printf("1. View Directory\n2. Modify Directory\n3. Main Menu\n");
 
 	//create a char array and set it to NULL
@@ -131,6 +132,7 @@ void simpleCryptoMenu() {
 }
 
 int main() {
-	setupMainMenu();
+	printDirectory();
+	//setupMainMenu();
 	return 0;
 }

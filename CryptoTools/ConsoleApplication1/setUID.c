@@ -119,18 +119,13 @@ int printDirectory() {
         perror("failed: ");
         return 1;
     }
-    printf("directory is open\n");
-    //step 2
-    //int count =0;
-    //int meta =0;
-    char ch;
-    int i = 0;
     //read the first line to determine how many employees are in the directory
     char eCount[500];
     char line[110];
     char *token = NULL;
     fgets(eCount,500,fp);
-    printf("first 5000 chars of file: %s",eCount);
+    int emps = atoi(eCount);
+    printf("Employee Count: %d\n",emps);
     //create and array of eInfo structs the size of eCount
     struct eInfo emp[500];
     char delmitier[2] = ",";
@@ -144,26 +139,48 @@ int printDirectory() {
         while(token != NULL) {
             if(meta == 5) {
                 empIdx++;
-                printf("emp idx is: %d\n",empIdx);
+                //printf("emp idx is: %d\n",empIdx);
                 meta = 0;
             }
-            printf("%s\n",token);
+            //printf("%s\n",token);
             if(meta == 0) {
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].lname[i] = token[i]; 
+                }
+            }
+            if(meta == 1) {
                 for(int i = 0; i < strlen(token); i ++) {
                    emp[empIdx].fname[i] = token[i]; 
                 }
             }
+            if(meta == 2) {
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].pos[i] = token[i]; 
+                }
+            }
+            if(meta == 3) {
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].eID[i] = token[i]; 
+                }
+            }
+            if(meta == 4) {
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].phone[i] = token[i]; 
+                }
+            }
             if(meta < 5) {
                 meta = meta+1;
-                printf("meta went up, meta now: %d\n",meta);
+                //printf("meta went up, meta now: %d\n",meta);
             }
             token = strtok(NULL,delmitier);
         }
     }
-
+    printf("-------------------------------------------\n");
     for(int i =0; i < atoi(eCount); i++ ) {
-        printf("Name: %s\n",emp[i].fname);
+        printf("First Name: %s\nLast Name: %s\nPosition: %s\nEmployee ID: %s\nEmployee Phone Number: %s\n",emp[i].fname,emp[i].lname,emp[i].pos,emp[i].eID,emp[i].phone);
+        printf("-------------------------------------------\n");
     }
     //step 3
-    fclose(fp);                                                                          
+    fclose(fp);
+    return 0;                                                                          
 }

@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
-//#include "sha1.h"
+
 //holds the User and owning user information
 struct userIds {
    uid_t rUser;
@@ -48,7 +48,7 @@ int validatePassword(const char *pword) {
         return 1;
     }
     char ch;
-    unsigned char phash[1000];
+    char phash[50];
     int i = 0;
     while((ch = fgetc(fp)) != EOF) {
         if(i < 1000) {
@@ -61,41 +61,43 @@ int validatePassword(const char *pword) {
     }
     fclose(fp);
     //downgrade uID
-    return 0;
-    
+    setuid(uID.rUser);
+    printf("actual: %s\n",phash);
+    printf("user: %s\n",pword);
+    //check users input against the
+    if(strcmp(phash,pword) == 0) {
+        return 0;
+    } else {
+        return -1;
+    }
 }
 
 /*
 allows the user to change the password provided that they know the current password
 */
-int changePassword(const char *curPword, const char *newPword) {
-    //step 1: validate the current password
-    //step 2: is user knows the curent password create a new has for the new password
-    //step 3: open password file and truncate
-    //step 4: add new hash and close file.
-
+int changePassword(const char *newPword) {
+    //step 1: open password file and truncate
+    //step 2: add new hash and close file.
+   
     //step 1
-    if(validatePassword(curPword)) {
-        //step 2
-        unsigned char newHash = SHA1(newPword);
-        //step 3
-        FILE *fp;
-        setuid(uID.owner);
-        fp = fopen("passwordFile.txt", "w+");
-        if(fp == NULL) {
-            perror("failed: ");
-            return 1;
-        }
+    FILE *fp;
+    setuid(uID.owner);
+    fp = fopen("passwordFile.txt", "w+");
+    if(fp == NULL) {
+        perror("failed: ");
+        return 1;
+    }
+    //step 2
+    if(fputs(newPword,fp)>0) {
+        fclose(fp);
         setuid(uID.rUser);
-        //step 4
-        if(fputs(newHash,fp)>0) {
-            fclose(fp);
-        } else {
-            perror("Failed: ");
-        }
+        return 0;
     } else {
+        perror("Failed: ");
+        setuid(uID.rUser);
         return -1;
     }
+    
 }
 
 /*

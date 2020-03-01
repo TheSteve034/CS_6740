@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "CryptoTool.h"
 #include "SimpleCryptoTool.h"
 #include "setUID.h"
@@ -44,7 +45,7 @@ void validateSelection(char buffer[2], int menuType) {
 			}
 		}
 		if (menuType == 3) {
-			//menuType 2 refers to the simple crypto tool
+			//menuType 2 refers to theemployee directory
 			if (buffer[0] != '1' && buffer[0] != '2' && buffer[0] != '3' && buffer[0] != '4') {
 				printf("Invalid selection.\n");
 				invaildAttempts++;
@@ -112,13 +113,28 @@ void setUIDMenu() {
 		unsigned char currPword[50];
 		gets(currPword);
 		//check password
-		int res = validatePassword(currPword);
 		if(validatePassword(currPword) == 0) {
 			//password is valid
 			printf("passord is valid.\n");
+			printf("Please enter new password. Password length not exceed 50 characters.\n");
+			const char *newPword[50];
+			fgets(newPword,55,stdin);
+			char *p;
+			if(p=strchr(newPword,'\n')) {
+				*p = 0;
+			} else {
+				scanf("%*[^\n]%*c");
+			}
+			if(changePassword(newPword) == 0) {
+				printf("Password was changed\n");
+				setupMainMenu();
+			} else {
+				printf("Password was not changed.\n");
+				setupMainMenu();
+			}
 		} else {
 			printf("Invalid password.\n");
-			setUIDMenu();
+			setupMainMenu();
 		}
 	}
 	if (buffer[0] == '4') {

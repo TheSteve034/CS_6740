@@ -11,6 +11,6 @@ struct eInfo {
 
 void captureUInfo();
 int validatePassword(const char *pword);
-int changePassword(const char *curPword, const char *newPword);
+int changePassword(const char *newPword);
 int printDirectory();
 #endif

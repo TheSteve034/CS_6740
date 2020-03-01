@@ -94,7 +94,7 @@ void setUIDMenu() {
 	printf("------------------------------------\n");
 	printf("Welcome to the setUID tool.\n");
 	printf("Select the desiered opertaion from the menu bellow.\n");
-	printf("1. View Directory\n2. Modify Directory\n3. Change Password\n4. Main Menu\n");
+	printf("1. View Directory\n2. Add Employee\n3. Change Password\n4. Main Menu\n");
 
 	//create a char array and set it to NULL
 	char buffer[2] = { 0 };
@@ -105,6 +105,31 @@ void setUIDMenu() {
 	if(buffer[0] == '1') {
 		printDirectory();
 		setUIDMenu();
+	}
+	if(buffer[0] == '2') {
+		struct eInfo newEmployee;
+		clearStdIn();
+		printf("Enter first Name\n");
+		gets(newEmployee.fname,50,stdin);
+		printf("Enter Last Name\n");
+		gets(newEmployee.lname);
+		printf("Enter Position\n");
+		gets(newEmployee.pos);
+		printf("Enter ID\n");
+		gets(newEmployee.eID);
+		printf("Enter phone\n");
+		gets(newEmployee.phone);
+		printf("%s %s %s %s %s\n",newEmployee.fname,newEmployee.lname,newEmployee.pos,newEmployee.eID,newEmployee.phone);
+
+		//call addEmp
+		if(addEmployee(&newEmployee) == 0) {
+			printf("Employee added.\n");
+			setupMainMenu();
+		} else {
+			printf("failed to add employee.\n");
+			setupMainMenu();
+		}
+		
 	}
 	if (buffer[0] == '3') {
 		//return to the main menu

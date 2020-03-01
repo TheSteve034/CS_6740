@@ -11,7 +11,6 @@ struct userIds {
 } uID;
 
 struct eInfo {
-    int active;
     char fname[50];
     char lname[50];
     char pos[50];
@@ -100,6 +99,21 @@ int changePassword(const char *newPword) {
     
 }
 
+int addEmployee(struct eInfo *new) {
+    setuid(uID.owner);
+    FILE *fp;
+    fp = fopen("directory.txt", "a");
+    if(fp == NULL) {
+        perror("failed: ");
+        return 1;
+    }
+    fprintf(fp,"%s,%s,%s,%s,%s\n", new->lname, new->fname, new->pos, new->eID, new->phone);
+    fclose(fp);
+    setuid(uID.rUser);
+
+    return 0;
+}
+
 /*
 Prints the employee directory
 */
@@ -120,9 +134,9 @@ int printDirectory() {
     char eCount[500];
     char line[110];
     char *token = NULL;
-    fgets(eCount,500,fp);
-    int emps = atoi(eCount);
-    printf("Employee Count: %d\n",emps);
+    //fgets(eCount,500,fp);
+    //int emps = atoi(eCount);
+    //printf("Employee Count: %d\n",emps);
     //create and array of eInfo structs the size of eCount
     struct eInfo emp[500];
     char delmitier[2] = ",";
@@ -174,8 +188,7 @@ int printDirectory() {
     }
     
     printf("-------------------------------------------\n");
-    for(int i =0; i < atoi(eCount); i++ ) {
-        emp[i].active =1;
+    for(int i =0; i < empIdx+1; i++ ) {
         printf("First Name: %s\nLast Name: %s\nPosition: %s\nEmployee ID: %s\nEmployee Phone Number: %s\n",emp[i].fname,emp[i].lname,emp[i].pos,emp[i].eID,emp[i].phone);
         printf("-------------------------------------------\n");
     }

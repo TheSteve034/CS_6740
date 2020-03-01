@@ -1,7 +1,6 @@
 #ifndef _setUID_H
 #define _setUID_H
 struct eInfo {
-    int active;
     char fname[50];
     char lname[50];
     char pos[50];
@@ -13,4 +12,8 @@ void captureUInfo();
 int validatePassword(const char *pword);
 int changePassword(const char *newPword);
 int printDirectory();
+//TODO:
+int addEmployee(struct eInfo *new);
+//RemoveEmployee();
+//DeleteEmployee();
 #endif

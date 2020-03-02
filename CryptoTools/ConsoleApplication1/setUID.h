@@ -14,6 +14,6 @@ int changePassword(const char *newPword);
 int printDirectory();
 //TODO:
 int addEmployee(struct eInfo *new);
-//RemoveEmployee();
-//DeleteEmployee();
+//int modifyEmployee(struct eInfo *new);
+void deleteEmployee(const char *eID);
 #endif

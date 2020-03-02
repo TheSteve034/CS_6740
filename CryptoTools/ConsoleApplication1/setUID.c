@@ -15,14 +15,14 @@ struct eInfo {
     char lname[50];
     char pos[50];
     char eID[50];
-    char phone[10];
+    char phone[50];
 };
 
 /*
 Collects the executing uID as well as the effective uID
 */
 void captureUInfo() {
-    uID.owner = getuid();
+    uID.rUser = getuid();
     uID.owner = geteuid();
     uID.rootGroup = 0;
 }
@@ -115,6 +115,145 @@ int addEmployee(struct eInfo *new) {
 }
 
 /*
+Deletes an employee based on eID
+*/
+void deleteEmployee(const char *eID) {
+    //step 1 open the directory file
+    //step 2 read file into array of eInof structs
+    //loop over array if element i has an eID = to eID then begin copying over
+    //step 3 open file in append mode and repopulate with the modified array
+    //step 1
+    setuid(uID.owner);
+    FILE *fp;
+    //fp = fopen("testDir.txt","r");;
+    fp = fopen("directory.txt", "r");
+    if(fp == NULL) {
+        perror("failed: ");
+        return 1;
+    }
+    //step 2
+    char line[110];
+    struct eInfo emp[500];
+    char delmitier[2] = ",";
+    int empIdx = 0;
+    int meta = 0;
+    int metaidx;
+    //while loop processes the file a line at time
+    while(fgets(line,110,fp) != NULL) {
+        int size = strlen(line);
+        line[size-2]='\0';
+        char *token;
+        char *rest = line;
+        while((token = strtok_r(rest,delmitier,&rest))) {
+            if(meta == 5) {
+                empIdx++;
+                //printf("emp idx is: %d\n",empIdx);
+                meta = 0;
+            }
+            //printf("%s\n",token);
+            if(meta == 0) {
+                //emp[empIdx].lname = token;
+                //printf("%s\n",token);
+                int idx = 0;
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].lname[i] = token[i]; 
+                   idx = idx +1;
+                }
+                for(int i = idx; i < 50-idx-1;i++) {
+                    emp[empIdx].lname[i] = '\0';
+                }
+            }
+            if(meta == 1) {
+                //printf("%s\n",token);
+                //emp[empIdx].fname = token;
+                int idx =0;
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].fname[i] = token[i];
+                   idx = idx +1; 
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].fname[i] = '\0';
+                }
+            }
+            if(meta == 2) {
+                //printf("%s\n",token);
+                //emp[empIdx].pos = token;
+                int idx =0;
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].pos[i] = token[i];
+                   idx = idx +1; 
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].pos[i] = '\0';
+                }
+            }
+            if(meta == 3) {
+                //printf("%s\n",token);
+                //mp[empIdx].eID = token;
+                int idx =0;
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].eID[i] = token[i];
+                   idx = idx+1; 
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].eID[i] = '\0';
+                }
+                //printf("%s\n",emp[empIdx].eID);
+            }
+            if(meta == 4) {
+                //printf("%s\n",token);
+                //emp[empIdx].phone = token;
+                int idx =0;
+                for(int i = 0; i < strlen(token); i ++) {
+                   emp[empIdx].phone[i] = token[i];
+                   idx = idx+1; 
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].phone[i] = '\0';
+                }
+            }
+            if(meta < 5) {
+                meta = meta+1;
+                //printf("meta went up, meta now: %d\n",meta);
+            }
+            //token = strtok(0,delmitier);
+        }
+    }
+    fclose(fp);
+
+    //step 3
+    int index = 0;
+    for(int i = 0;i < empIdx+1; i ++ ) {
+        int temp = strcmp(emp[i].eID,eID);
+        printf("%d\n",temp);
+        printf("eid = %s and %s\n", emp[i].eID, eID);
+        if(strcmp(emp[i].eID,eID) == 0) {
+            printf("eid = %s and %s\n", emp[i].eID, eID);
+            //emp[i] = emp[i+1];i
+            index = i;
+        }
+    }
+    for(int i = index; i < empIdx + 1; i++) {
+        emp[i] = emp[i+1];
+    }
+    empIdx = empIdx -1;
+    //step 4
+    //fp = fopen("testDir.txt","w+");
+    fp = fopen("directory.txt", "w+");
+    if(fp == NULL) {
+        perror("failed: ");
+        return 1;
+    }
+    for(int i = 0; i < empIdx+1; i ++) {
+        fprintf(fp,"%s,%s,%s,%s,%s\n", emp[i].lname, emp[i].fname, emp[i].pos, emp[i].eID, emp[i].phone);
+        printf("round %d\n",i);
+    }
+    printf("after print\n");
+    setuid(uID.rUser);
+    fclose(fp);
+}
+
+/*
 Prints the employee directory
 */
 int printDirectory() {
@@ -131,23 +270,21 @@ int printDirectory() {
         return 1;
     }
     //read the first line to determine how many employees are in the directory
-    char eCount[500];
+    //char eCount[500];
     char line[110];
-    char *token = NULL;
-    //fgets(eCount,500,fp);
-    //int emps = atoi(eCount);
-    //printf("Employee Count: %d\n",emps);
-    //create and array of eInfo structs the size of eCount
     struct eInfo emp[500];
     char delmitier[2] = ",";
     int empIdx = 0;
     int meta = 0;
+    int metaidx;
     //while loop processes the file a line at time
     while(fgets(line,110,fp) != NULL) {
         int size = strlen(line);
         line[size-2]='\0';
-        token = strtok(line,delmitier);
-        while(token != NULL) {
+        char *token;
+        char *rest = line;
+        
+        while((token = strtok_r(rest,delmitier,&rest))) {
             if(meta == 5) {
                 empIdx++;
                 //printf("emp idx is: %d\n",empIdx);
@@ -155,35 +292,71 @@ int printDirectory() {
             }
             //printf("%s\n",token);
             if(meta == 0) {
+                //emp[empIdx].lname = token;
+                //printf("%s\n",token);
+                int idx = 0;
                 for(int i = 0; i < strlen(token); i ++) {
                    emp[empIdx].lname[i] = token[i]; 
+                   idx = idx +1;
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].lname[i] = '\0';
                 }
             }
             if(meta == 1) {
+                //printf("%s\n",token);
+                //emp[empIdx].fname = token;
+                int idx =0;
                 for(int i = 0; i < strlen(token); i ++) {
-                   emp[empIdx].fname[i] = token[i]; 
+                   emp[empIdx].fname[i] = token[i];
+                   idx = idx +1; 
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].fname[i] = '\0';
                 }
             }
             if(meta == 2) {
+                //printf("%s\n",token);
+                //emp[empIdx].pos = token;
+                int idx =0;
                 for(int i = 0; i < strlen(token); i ++) {
-                   emp[empIdx].pos[i] = token[i]; 
+                   emp[empIdx].pos[i] = token[i];
+                   idx = idx +1; 
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].pos[i] = '\0';
                 }
             }
             if(meta == 3) {
+                //printf("%s\n",token);
+                //mp[empIdx].eID = token;
+                int idx =0;
                 for(int i = 0; i < strlen(token); i ++) {
-                   emp[empIdx].eID[i] = token[i]; 
+                   emp[empIdx].eID[i] = token[i];
+                   idx = idx+1; 
                 }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].eID[i] = '\0';
+                }
+                //printf("%s\n",emp[empIdx].eID);
             }
             if(meta == 4) {
+                //printf("%s\n",token);
+                //emp[empIdx].phone = token;
+                int idx =0;
                 for(int i = 0; i < strlen(token); i ++) {
-                   emp[empIdx].phone[i] = token[i]; 
+                   emp[empIdx].phone[i] = token[i];
+                   idx = idx+1; 
+                }
+                for(int i = idx; i < 50-idx;i++) {
+                    emp[empIdx].phone[i] = '\0';
                 }
             }
             if(meta < 5) {
                 meta = meta+1;
                 //printf("meta went up, meta now: %d\n",meta);
             }
-            token = strtok(NULL,delmitier);
+            //token = strtok(0,delmitier);
         }
     }
     

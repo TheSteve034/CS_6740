@@ -46,7 +46,7 @@ void validateSelection(char buffer[2], int menuType) {
 		}
 		if (menuType == 3) {
 			//menuType 2 refers to theemployee directory
-			if (buffer[0] != '1' && buffer[0] != '2' && buffer[0] != '3' && buffer[0] != '4') {
+			if (buffer[0] != '1' && buffer[0] != '2' && buffer[0] != '3' && buffer[0] != '4' && buffer[0] != '5' && buffer[0] != '6') {
 				printf("Invalid selection.\n");
 				invaildAttempts++;
 				clearStdIn();
@@ -94,7 +94,7 @@ void setUIDMenu() {
 	printf("------------------------------------\n");
 	printf("Welcome to the setUID tool.\n");
 	printf("Select the desiered opertaion from the menu bellow.\n");
-	printf("1. View Directory\n2. Add Employee\n3. Change Password\n4. Main Menu\n");
+	printf("1. View Directory\n2. Add Employee\n3. Modifiy Employee Record\n4. Delete Employee\n5. Resert Password\n6. Main Menu\n");
 
 	//create a char array and set it to NULL
 	char buffer[2] = { 0 };
@@ -119,7 +119,7 @@ void setUIDMenu() {
 		gets(newEmployee.eID);
 		printf("Enter phone\n");
 		gets(newEmployee.phone);
-		printf("%s %s %s %s %s\n",newEmployee.fname,newEmployee.lname,newEmployee.pos,newEmployee.eID,newEmployee.phone);
+		printf("Employee to be added: %s,%s,%s,%s,%s\n",newEmployee.fname,newEmployee.lname,newEmployee.pos,newEmployee.eID,newEmployee.phone);
 
 		//call addEmp
 		if(addEmployee(&newEmployee) == 0) {
@@ -131,8 +131,18 @@ void setUIDMenu() {
 		}
 		
 	}
-	if (buffer[0] == '3') {
-		//return to the main menu
+	if (buffer[0] == '4') {
+		clearStdIn();
+		const char *eID;
+		printf("Enter the employee ID you wish to delete from the directory.\n");
+		gets(&eID);
+		
+		deleteEmployee(&eID);
+		printf("Employee Deleted\n");
+		setupMainMenu();
+	}
+	if (buffer[0] == '5') {
+		//change password
 		clearStdIn();
 		printf("To reset password please provide the current password:\n");
 		unsigned char currPword[50];
@@ -162,7 +172,7 @@ void setUIDMenu() {
 			setupMainMenu();
 		}
 	}
-	if (buffer[0] == '4') {
+	if (buffer[0] == '6') {
 		//return to the main menu
 		clearStdIn();
 		setupMainMenu();

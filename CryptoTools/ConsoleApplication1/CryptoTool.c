@@ -94,7 +94,7 @@ void setUIDMenu() {
 	printf("------------------------------------\n");
 	printf("Welcome to the setUID tool.\n");
 	printf("Select the desiered opertaion from the menu bellow.\n");
-	printf("1. View Directory\n2. Add Employee\n3. Modifiy Employee Record\n4. Delete Employee\n5. Resert Password\n6. Main Menu\n");
+	printf("1. View Directory\n2. Add Employee\n3. Modifiy Employee Record\n4. Delete Employee\n5. Reset Password\n6. Main Menu\n");
 
 	//create a char array and set it to NULL
 	char buffer[2] = { 0 };
@@ -107,39 +107,63 @@ void setUIDMenu() {
 		setUIDMenu();
 	}
 	if(buffer[0] == '2') {
-		struct eInfo newEmployee;
 		clearStdIn();
-		printf("Enter first Name\n");
-		gets(newEmployee.fname,50,stdin);
-		printf("Enter Last Name\n");
-		gets(newEmployee.lname);
-		printf("Enter Position\n");
-		gets(newEmployee.pos);
-		printf("Enter ID\n");
-		gets(newEmployee.eID);
-		printf("Enter phone\n");
-		gets(newEmployee.phone);
-		printf("Employee to be added: %s,%s,%s,%s,%s\n",newEmployee.fname,newEmployee.lname,newEmployee.pos,newEmployee.eID,newEmployee.phone);
+		printf("To add new employee please provide the current password:\n");
+		unsigned char currPword[50];
+		gets(currPword);
+		int valid = validatePassword(currPword);
+		if(valid == 0) {
+			struct eInfo newEmployee;
+			//clearStdIn();
+			printf("Enter first Name\n");
+			gets(newEmployee.fname,50,stdin);
+			printf("Enter Last Name\n");
+			gets(newEmployee.lname);
+			printf("Enter Position\n");
+			gets(newEmployee.pos);
+			printf("Enter ID\n");
+			gets(newEmployee.eID);
+			printf("Enter phone\n");
+			gets(newEmployee.phone);
+			printf("Employee to be added: %s,%s,%s,%s,%s\n",newEmployee.fname,newEmployee.lname,newEmployee.pos,newEmployee.eID,newEmployee.phone);
 
-		//call addEmp
-		if(addEmployee(&newEmployee) == 0) {
-			printf("Employee added.\n");
-			setupMainMenu();
-		} else {
-			printf("failed to add employee.\n");
+			//call addEmp
+			if(addEmployee(&newEmployee) == 0) {
+				printf("Employee added.\n");
+				setupMainMenu();
+			} else {
+				printf("failed to add employee.\n");
+				setupMainMenu();
+			}
+		}else {
+			printf("Invalid password.\n");
 			setupMainMenu();
 		}
-		
 	}
 	if (buffer[0] == '4') {
 		clearStdIn();
-		const char *eID;
-		printf("Enter the employee ID you wish to delete from the directory.\n");
-		gets(&eID);
+		printf("To remove an employee please provide the current password:\n");
+		unsigned char currPword[50];
+		gets(currPword);
+		int valid = validatePassword(currPword);
+		if(valid == 0) {
+			const char *eID;
+			printf("Enter the employee ID you wish to delete from the directory.\n");
+			gets(&eID);
 		
-		deleteEmployee(&eID);
-		printf("Employee Deleted\n");
-		setupMainMenu();
+			int result = deleteEmployee(&eID);
+			if(result == 0) {
+				printf("Employee Deleted\n");
+				setupMainMenu();
+			} else {
+				printf("Failed to delete employee, no matching employee ID.\n");
+				setupMainMenu();
+			}
+		} else {
+			printf("Invalid password.\n");
+			setupMainMenu();
+		}
+ 		
 	}
 	if (buffer[0] == '5') {
 		//change password

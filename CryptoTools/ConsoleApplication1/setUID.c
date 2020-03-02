@@ -61,8 +61,8 @@ int validatePassword(const char *pword) {
     fclose(fp);
     //downgrade uID
     setuid(uID.rUser);
-    printf("actual: %s\n",phash);
-    printf("user: %s\n",pword);
+    //printf("actual: %s\n",phash);
+    //printf("user: %s\n",pword);
     //check users input against the
     if(strcmp(phash,pword) == 0) {
         return 0;
@@ -117,7 +117,7 @@ int addEmployee(struct eInfo *new) {
 /*
 Deletes an employee based on eID
 */
-void deleteEmployee(const char *eID) {
+int deleteEmployee(const char *eID) {
     //step 1 open the directory file
     //step 2 read file into array of eInof structs
     //loop over array if element i has an eID = to eID then begin copying over
@@ -223,15 +223,20 @@ void deleteEmployee(const char *eID) {
 
     //step 3
     int index = 0;
+    int success =-1;
     for(int i = 0;i < empIdx+1; i ++ ) {
         int temp = strcmp(emp[i].eID,eID);
-        printf("%d\n",temp);
-        printf("eid = %s and %s\n", emp[i].eID, eID);
+        //printf("%d\n",temp);
+        //printf("eid = %s and %s\n", emp[i].eID, eID);
         if(strcmp(emp[i].eID,eID) == 0) {
-            printf("eid = %s and %s\n", emp[i].eID, eID);
+            //printf("eid = %s and %s\n", emp[i].eID, eID);
             //emp[i] = emp[i+1];i
+            success =0;
             index = i;
         }
+    }
+    if(success == -1) {
+        return -1;
     }
     for(int i = index; i < empIdx + 1; i++) {
         emp[i] = emp[i+1];
@@ -246,11 +251,12 @@ void deleteEmployee(const char *eID) {
     }
     for(int i = 0; i < empIdx+1; i ++) {
         fprintf(fp,"%s,%s,%s,%s,%s\n", emp[i].lname, emp[i].fname, emp[i].pos, emp[i].eID, emp[i].phone);
-        printf("round %d\n",i);
+        //printf("round %d\n",i);
     }
-    printf("after print\n");
+    //printf("after print\n");
     setuid(uID.rUser);
     fclose(fp);
+    return 0;
 }
 
 /*

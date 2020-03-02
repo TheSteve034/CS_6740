@@ -15,5 +15,5 @@ int printDirectory();
 //TODO:
 int addEmployee(struct eInfo *new);
 //int modifyEmployee(struct eInfo *new);
-void deleteEmployee(const char *eID);
+int deleteEmployee(const char *eID);
 #endif
